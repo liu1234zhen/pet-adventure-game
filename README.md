@@ -1,4 +1,4 @@
-# pet-adventure-game#宠物冒险游戏宠物冒险游戏#宠物冒险游戏宠物冒险游戏#宠物冒险游戏宠物冒险游戏#宠物冒险游戏宠物冒险游戏#宠物冒险游戏宠物冒险游戏#宠物冒险游戏宠物冒险游戏#宠物冒险游戏宠物冒险游戏#宠物冒险游戏<!DOCTYPE html>
+# pet-adventure-game#宠物冒险游戏宠物冒险游戏#宠物冒险游戏宠物冒险游戏#宠物冒险游戏宠物冒险游戏#宠物冒险游戏宠物冒险游戏#宠物冒险游戏宠物冒险游戏#宠物冒险游戏宠物冒险游戏#宠物冒险游戏宠物冒险游戏#宠物冒险游戏<!DOCTYPE html>#宠物冒险游戏#宠物冒险游戏#宠物冒险游戏#宠物冒险游戏#宠物冒险游戏#宠物冒险游戏#宠物冒险游戏#宠物冒险游戏#宠物冒险游戏#宠物冒险游戏#宠物冒险游戏<!DOCTYPE html
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -11,8 +11,8 @@ body{background:#f0f8ff;text-align:center;padding:15px;overflow:hidden}
 #pet{
     font-size:140px;
     margin:30px auto;
-    transition:all 0.2s;
-    user-select:none;
+    transition:all 0.2s;过渡:全部 0.2秒;
+    user-select:none;用户选择:无;
 }
 @keyframes run{0%{transform:translateX(-25px) scale(1)}50%{transform:translateX(25px) scale(1.1)}100%{transform:translateX(-25px) scale(1)}}
 @keyframes jump{0%{transform:translateY(0)}50%{transform:translateY(-40px)}100%{transform:translateY(0)}}
