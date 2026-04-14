@@ -1,1 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宠物大冒险 - Pet Adventure</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
 
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 800px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .screen {
+            display: none;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        p {
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .pet-select {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+
+        .pet-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            width: 150px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 3px solid transparent;
+        }
+
+        .pet-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .pet-card.selected {
+            border-color: #667eea;
+            background: #e8f0fe;
+        }
+
+        .pet-card img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 10px;
+        }
+
+        .pet-card h3 {
+            color: #333;
+            font-size: 1.2em;
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: space-around;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .stat-value {
+            color: #667eea;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            transition: width 0.3s;
+        }
+
+        .adventure-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .adventure-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            border: 2px solid #e0e0e0;
+        }
+
+        .adventure-card:hover {
+            transform: scale(1.05);
+            border-color: #667eea;
+        }
+
+        .adventure-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .shop-items {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .shop-item {
+            background: #fff3e0;
+            border-radius: 15px;
+            padding: 15px;
+            border: 2px solid #ff9800;
+        }
+
+        .shop-item h3 {
+            color: #e65100;
+            margin-bottom: 5px;
+        }
+
+        .shop-item .price {
+            color: #ff9800;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .leaderboard {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .leaderboard-item:last-child {
+            border-bottom: none;
+        }
+
+        .rank {
+            color: #667eea;
+            font-weight: bold;
+            width: 30px;
+        }
+
+        .name {
+            flex: 1;
+            text-align: left;
+            padding-left: 15px;
+        }
+
+        .score {
+            color: #333;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .adventure-options, .shop-items {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- 开始界面 -->
+        <div id="start-screen" class="screen active">
+            <h1>🐾 宠物大冒险 🐾</h1>
+            <p>培养你的专属宠物，一起踏上冒险之旅！</p>
+            <p>喂食、玩耍、探险、赚钱，成为最强宠物训练师！</p>
+            <button class="btn" onclick="startGame()">开始游戏</button>
+        </div>
+
+        <!-- 宠物选择界面 -->
+        <div id="pet-select-screen" class="screen">
+            <h2>选择你的宠物</h2>
+            <p>点击你喜欢的宠物，开启冒险吧！</p>
+            <div class="pet-select">
+                <div class="pet-card" onclick="selectPet('cat')">
+                    <div style="font-size: 60px;">🐱</div>
+                    <h3>猫咪</h3>
+                    <p>可爱又独立</p>
+                </div>
+                <div class="pet-card" onclick="selectPet('dog')">
+                    <div style="font-size: 60px;">🐶</div>
+                    <h3>狗狗</h3>
+                    <p>忠诚又活泼</p>
+                </div>
+                <div class="pet-card" onclick="selectPet('rabbit')">
+                    <div style="font-size: 60px;">🐰</div>
+                    <h3>兔子</h3>
+                    <p>温顺又可爱</p>
+                </div>
+            </div>
+            <button class="btn" onclick="confirmPet()" id="confirm-btn" disabled>确认选择</button>
+        </div>
+
+        <!-- 主游戏界面 -->
+        <div id="game-screen" class="screen">
+            <div class="game-stats">
+                <div class="stat">
+                    <div class="stat-label">❤️ 生命值</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="health-bar" style="width: 100%"></div>
+                    </div>
+                    <div class="stat-value" id="health-value">100</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">⚡ 快乐值</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="happy-bar" style="width: 100%"></div>
+                    </div>
+                    <div class="stat-value" id="happy-value">100</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">💰 金币</div>
+                    <div class="stat-value" id="coin-value">0</div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 20px 0;">
+                <div id="pet-display" style="font-size: 100px;">🐱</div>
+                <h2 id="pet-name">我的宠物</h2>
+            </div>
+
+            <div class="adventure-options">
+                <div class="adventure-card" onclick="feedPet()">
+                    <h3>🍖 喂食</h3>
+                    <p>恢复生命值</p>
+                </div>
+                <div class="adventure-card" onclick="playWithPet()">
+                    <h3>🎾 玩耍</h3>
+                    <p>提升快乐值</p>
+                </div>
+                <div class="adventure-card" onclick="goAdventure()">
+                    <h3>🗺️ 冒险</h3>
+                    <p>赚取金币</p>
+                </div>
+                <div class="adventure-card" onclick="openShop()">
+                    <h3>🛒 商店</h3>
+                    <p>购买道具</p>
+                </div>
+                <div class="adventure-card" onclick="openLeaderboard()">
+                    <h3>🏆 排行榜</h3>
+                    <p>查看排名</p>
+                </div>
+                <div class="adventure-card" onclick="watchAd()">
+                    <h3>📺 看广告</h3>
+                    <p>免费领金币</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 商店界面 -->
+        <div id="shop-screen" class="screen">
+            <h2>🛒 道具商店</h2>
+            <p>当前金币: <span id="shop-coins">0</span></p>
+            <div class="shop-items">
+                <div class="shop-item">
+                    <h3>🍖 高级猫粮</h3>
+                    <p>恢复50点生命值</p>
+                    <p class="price">💰 20金币</p>
+                    <button class="btn" onclick="buyItem('food')">购买</button>
+                </div>
+                <div class="shop-item">
+                    <h3>🎾 超级玩具</h3>
+                    <p>恢复50点快乐值</p>
+                    <p class="price">💰 20金币</p>
+                    <button class="btn" onclick="buyItem('toy')">购买</button>
+                </div>
+                <div class="shop-item">
+                    <h3>✨ 幸运药水</h3>
+                    <p>冒险金币翻倍</p>
+                    <p class="price">💰 50金币</p>
+                    <button class="btn" onclick="buyItem('potion')">购买</button>
+                </div>
+                <div class="shop-item">
+                    <h3>💎 宠物皮肤</h3>
+                    <p>解锁炫酷外观</p>
+                    <p class="price">💰 100金币</p>
+                    <button class="btn" onclick="buyItem('skin')">购买</button>
+                </div>
+            </div>
+            <button class="btn" onclick="closeShop()">返回游戏</button>
+        </div>
+
+        <!-- 排行榜界面 -->
+        <div id="leaderboard-screen" class="screen">
+            <h2>🏆 排行榜</h2>
+            <div class="leaderboard" id="leaderboard-list">
+                <!-- 排行榜数据将由JS动态生成 -->
+            </div>
+            <button class="btn" onclick="closeLeaderboard()">返回游戏</button>
+        </div>
+
+        <!-- 广告界面 -->
+        <div id="ad-screen" class="screen">
+            <h2>📺 观看广告</h2>
+            <p>观看30秒广告，免费领取50金币！</p>
+            <div style="background: #333; height: 200px; border-radius: 10px; display: flex; justify-content: center; align-items: center; color: white; margin: 20px 0;">
+                <p>广告加载中...</p>
+            </div>
+            <button class="btn" onclick="claimAdReward()">领取奖励</button>
+            <button class="btn" onclick="closeAd()">跳过</button>
+        </div>
+    </div>
+
+    <script>
+        // 游戏状态
+        let gameState = {
+            petType: null,
+            health: 100,
+            happy: 100,
+            coins: 0,
+            selectedPet: null,
+            doubleCoins: false,
+            skinUnlocked: false
+        };
+
+        // 宠物图标
+        const petIcons = {
+            cat: '🐱',
+            dog: '🐶',
+            rabbit: '🐰',
+            catSkin: '😺',
+            dogSkin: '🐕',
+            rabbitSkin: '🐰✨'
+        };
+
+        // 开始游戏
+        function startGame() {
+            showScreen('pet-select-screen');
+        }
+
+        // 选择宠物
+        function selectPet(type) {
+            gameState.selectedPet = type;
+            document.getElementById('confirm-btn').disabled = false;
+            
+            // 高亮选中的宠物
+            document.querySelectorAll('.pet-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+        }
+
+        // 确认宠物
+        function confirmPet() {
+            if (!gameState.selectedPet) return;
+            
+            gameState.petType = gameState.selectedPet;
+            updatePetDisplay();
+            showScreen('game-screen');
+            startStatsDecay();
+        }
+
+        // 更新宠物显示
+        function updatePetDisplay() {
+            let icon = gameState.skinUnlocked ? petIcons[gameState.petType + 'Skin'] : petIcons[gameState.petType];
+            document.getElementById('pet-display').textContent = icon;
+            document.getElementById('pet-name').textContent = getPetName(gameState.petType);
+        }
+
+        // 获取宠物名称
+        function getPetName(type) {
+            const names = {
+                cat: '小猫咪',
+                dog: '小狗狗',
+                rabbit: '小兔子'
+            };
+            return names[type] || '我的宠物';
+        }
+
+        // 显示指定界面
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        // 更新状态栏
+        function updateStats() {
+            document.getElementById('health-bar').style.width = gameState.health + '%';
+            document.getElementById('health-value').textContent = Math.floor(gameState.health);
+            document.getElementById('happy-bar').style.width = gameState.happy + '%';
+            document.getElementById('happy-value').textContent = Math.floor(gameState.happy);
+            document.getElementById('coin-value').textContent = gameState.coins;
+            document.getElementById('shop-coins').textContent = gameState.coins;
+        }
+
+        // 状态自动衰减
+        function startStatsDecay() {
+            setInterval(() => {
+                if (gameState.health > 0) gameState.health -= 0.5;
+                if (gameState.happy > 0) gameState.happy -= 0.3;
+                updateStats();
+                
+                // 检查宠物状态
+                if (gameState.health <= 0 || gameState.happy <= 0) {
+                    alert('宠物状态不佳，请及时照顾！');
+                }
+            }, 1000);
+        }
+
+        // 喂食
+        function feedPet() {
+            if (gameState.coins >= 10) {
+                gameState.coins -= 10;
+                gameState.health = Math.min(100, gameState.health + 20);
+                updateStats();
+                alert('喂食成功！宠物生命值+20');
+            } else {
+                alert('金币不足，去冒险赚钱吧！');
+            }
+        }
+
+        // 玩耍
+        function playWithPet() {
+            if (gameState.coins >= 10) {
+                gameState.coins -= 10;
+                gameState.happy = Math.min(100, gameState.happy + 20);
+                updateStats();
+                alert('玩耍成功！宠物快乐值+20');
+            } else {
+                alert('金币不足，去冒险赚钱吧！');
+            }
+        }
+
+        // 冒险
+        function goAdventure() {
+            let reward = Math.floor(Math.random() * 30) + 10;
+            if (gameState.doubleCoins) {
+                reward *= 2;
+                gameState.doubleCoins = false;
+            }
+            
+            gameState.coins += reward;
+            gameState.health = Math.max(0, gameState.health - 10);
+            gameState.happy = Math.max(0, gameState.happy - 5);
+            updateStats();
+            
+            alert(`冒险成功！获得 ${reward} 金币！`);
+        }
+
+        // 打开商店
+        function openShop() {
+            showScreen('shop-screen');
+        }
+
+        // 关闭商店
+        function closeShop() {
+            showScreen('game-screen');
+        }
+
+        // 购买道具
+        function buyItem(item) {
+            const prices = {
+                food: 20,
+                toy: 20,
+                potion: 50,
+                skin: 100
+            };
+            
+            if (gameState.coins >= prices[item]) {
+                gameState.coins -= prices[item];
+                
+                switch(item) {
+                    case 'food':
+                        gameState.health = Math.min(100, gameState.health + 50);
+                        alert('购买成功！生命值+50');
+                        break;
+                    case 'toy':
+                        gameState.happy = Math.min(100, gameState.happy + 50);
+                        alert('购买成功！快乐值+50');
+                        break;
+                    case 'potion':
+                        gameState.doubleCoins = true;
+                        alert('购买成功！下一次冒险金币翻倍！');
+                        break;
+                    case 'skin':
+                        gameState.skinUnlocked = true;
+                        updatePetDisplay();
+                        alert('购买成功！解锁炫酷皮肤！');
+                        break;
+                }
+                
+                updateStats();
+            } else {
+                alert('金币不足，去冒险赚钱吧！');
+            }
+        }
+
+        // 打开排行榜
+        function openLeaderboard() {
+            updateLeaderboard();
+            showScreen('leaderboard-screen');
+        }
+
+        // 关闭排行榜
+        function closeLeaderboard() {
+            showScreen('game-screen');
+        }
+
+        // 更新排行榜
+        function updateLeaderboard() {
+            const leaderboard = [
+                { name: '宠物大师', score: 10000 },
+                { name: '冒险王', score: 8500 },
+                { name: '饲养专家', score: 7200 },
+                { name: '你', score: gameState.coins }
+            ];
+            
+            leaderboard.sort((a, b) => b.score - a.score);
+            
+            const list = document.getElementById('leaderboard-list');
+            list.innerHTML = leaderboard.map((item, index) => `
+                <div class="leaderboard-item">
+                    <span class="rank">#${index + 1}</span>
+                    <span class="name">${item.name}</span>
+                    <span class="score">${item.score} 金币</span>
+                </div>
+            `).join('');
+        }
+
+        // 看广告
+        function watchAd() {
+            showScreen('ad-screen');
+        }
+
+        // 领取广告奖励
+        function claimAdReward() {
+            gameState.coins += 50;
+            updateStats();
+            alert('领取成功！获得50金币！');
+            closeAd();
+        }
+
+        // 关闭广告
+        function closeAd() {
+            showScreen('game-screen');
+        }
+    </script>
+</body>
+</html>
